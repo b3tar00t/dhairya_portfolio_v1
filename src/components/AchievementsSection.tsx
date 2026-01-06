@@ -3,6 +3,12 @@ import TerminalHeader from './TerminalHeader';
 
 const achievements = [
   {
+    icon: Award,
+    title: 'Certified Network Security Practitioner (CNSP)',
+    description: 'Professional certification in Network Security',
+    type: 'certification'
+  },
+  {
     icon: Shield,
     title: 'Certified Cyber Criminologist',
     description: 'Licensed certification in cybercriminal investigation',
@@ -37,12 +43,6 @@ const achievements = [
     title: 'ISEA Cyber Ethics Certification',
     description: 'Certified by MeitY in cyber ethics',
     type: 'certification'
-  },
-  {
-    icon: Trophy,
-    title: 'Microsoft Word Sankalp 2019',
-    description: 'Regional Finalist',
-    type: 'award'
   }
 ];
 

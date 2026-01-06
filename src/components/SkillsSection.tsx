@@ -7,7 +7,7 @@ const technicalSkills = [
   { name: 'Vulnerability Assessment', level: 88 },
   { name: 'Cyber Threat Hunting', level: 85 },
   { name: 'Log Analysis', level: 80 },
-  { name: 'Python', level: 85 },
+  { name: 'Python', level: 90 },
   { name: 'Bash Scripting', level: 80 },
   { name: 'C/C++', level: 75 },
   { name: 'Java', level: 70 },
@@ -15,9 +15,9 @@ const technicalSkills = [
 
 const tools = [
   'Burp Suite', 'Metasploit', 'Nmap', 'Wireshark', 
-  'John the Ripper', 'Hydra', 'SQLMap', 'OWASP ZAP',
-  'Maltego', 'theHarvester', 'Shodan', 'Censys',
-  'Autopsy', 'Volatility', 'FTK Imager', 'Ghidra'
+  'John the Ripper', 'Hydra', 'SQLMap', 'Nessus',
+  'Maltego', 'theHarvester', 'Shodan', 'Amass',
+  'Nuclei', 'Volatility', 'FTK Imager', 'Ghidra'
 ];
 
 const softSkills = [

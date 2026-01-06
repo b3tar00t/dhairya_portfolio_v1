@@ -3,20 +3,20 @@ import TerminalHeader from './TerminalHeader';
 
 const projects = [
   {
-    name: 'ASSET',
-    fullName: 'Anti Social Engineering and Education Toolkit',
-    description: 'Tool for detecting, preventing, and training against social engineering attacks.',
-    tags: ['Python', 'Security', 'Awareness Training'],
-    github: '#',
+    name: 'fath0m',
+    fullName: 'Service-Aware Vulnerability & Exploit Correlation Tool',
+    description: 'Service-aware CVE correlation tool with version-aware matching and confidence scoring for manual penetration testing.',
+    tags: ['Python', 'Offensive Security', 'Port Scanning'],
+    github: 'https://github.com/b3tar00t/fath0m',
     demo: '#',
     featured: true
   },
   {
-    name: 'GitHub Projects',
-    fullName: 'Security Tools Repository',
-    description: '5+ repositories focused on cybersecurity tools with ongoing development of additional projects.',
-    tags: ['Python', 'Bash', 'Security Tools'],
-    github: 'https://github.com/b3tar00t',
+    name: 'SocOSINT',
+    fullName: 'Social Media User Enumeration Tool',
+    description: 'OSINT reconnaissance tool scanning 70+ platforms for username exposure.',
+    tags: ['Python', 'OSINT', 'Enumeration'],
+    github: 'https://github.com/b3tar00t/SocOSINT',
     featured: false
   }
 ];

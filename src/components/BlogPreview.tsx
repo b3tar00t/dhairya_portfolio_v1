@@ -9,138 +9,244 @@ interface BlogPreviewProps {
 }
 
 const BlogPreview = ({ title, content, tags, date, readTime }: BlogPreviewProps) => {
+
+  /* ---------------- NORMALIZATION ---------------- */
+
   const normalizeMarkdownImages = (raw: string) => {
-    const withLf = raw.replace(/\r\n/g, "\n");
-
-    // Handle split-line markdown like:
-    // ![alt]\n(url)
-    const fixSplit = withLf.replace(
+    const withLf = raw.replace(/\r\n/g, '\n');
+    return withLf.replace(
       /!\s*\[([^\]]*)\]\s*\n\s*\(\s*([^)]+?)\s*\)/g,
-      "![$1]($2)"
+      '![$1]($2)'
     );
-
-    // Normalize extra spaces inside the image syntax
-    const fixSpaces = fixSplit.replace(
-      /!\s*\[([^\]]*)\]\s*\(\s*([^)]+?)\s*\)/g,
-      "![$1]($2)"
-    );
-
-    return fixSpaces;
   };
 
-  // Markdown-like rendering (same as BlogPost)
-  const renderContent = (content: string) => {
-    const normalized = normalizeMarkdownImages(content);
+  /* ---------------- INLINE PARSER ---------------- */
 
-    return normalized.split('\n').map((line, index) => {
-      // Headers
-      if (line.startsWith('## ')) {
-        return (
-          <h2 key={index} className="text-xl font-bold text-cyan-400 mt-8 mb-4" style={{ textShadow: '0 0 10px rgba(34, 211, 238, 0.3)' }}>
-            <span className="text-cyan-400/50"># </span>{line.slice(3)}
-          </h2>
+  const parseInlineElements = (text: string): React.ReactNode[] => {
+    const elements: React.ReactNode[] = [];
+    let remaining = text;
+    let key = 0;
+
+    while (remaining.length) {
+      const img = remaining.match(/^!\[([^\]]*)\]\(([^)]+)\)/);
+      if (img) {
+        elements.push(
+          <img
+            key={key++}
+            src={img[2]}
+            alt={img[1]}
+            loading="lazy"
+            className="max-w-full rounded my-4 border border-cyan-900/50"
+          />
         );
+        remaining = remaining.slice(img[0].length);
+        continue;
       }
+
+      const link = remaining.match(/^\[([^\]]+)\]\(([^)]+)\)/);
+      if (link) {
+        elements.push(
+          <a
+            key={key++}
+            href={link[2]}
+            className="text-cyan-300 underline hover:text-cyan-400"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {link[1]}
+          </a>
+        );
+        remaining = remaining.slice(link[0].length);
+        continue;
+      }
+
+      const bold = remaining.match(/^\*\*([^*]+)\*\*/);
+      if (bold) {
+        elements.push(<strong key={key++} className="text-cyan-300">{bold[1]}</strong>);
+        remaining = remaining.slice(bold[0].length);
+        continue;
+      }
+
+      const italic = remaining.match(/^\*([^*]+)\*/);
+      if (italic) {
+        elements.push(<em key={key++} className="text-cyan-300/90">{italic[1]}</em>);
+        remaining = remaining.slice(italic[0].length);
+        continue;
+      }
+
+      const code = remaining.match(/^`([^`]+)`/);
+      if (code) {
+        elements.push(
+          <code key={key++} className="px-1.5 py-0.5 bg-cyan-950 text-cyan-300 rounded text-sm">
+            {code[1]}
+          </code>
+        );
+        remaining = remaining.slice(code[0].length);
+        continue;
+      }
+
+      elements.push(remaining[0]);
+      remaining = remaining.slice(1);
+    }
+
+    return elements;
+  };
+
+  /* ---------------- MARKDOWN RENDERER ---------------- */
+
+  const renderContent = (raw: string) => {
+    const lines = normalizeMarkdownImages(raw).split('\n');
+    const elements: React.ReactNode[] = [];
+
+    let inCode = false;
+    let codeBuffer: string[] = [];
+    let listBuffer: React.ReactNode[] = [];
+    let listType: 'ul' | 'ol' | null = null;
+
+    const flushList = () => {
+      if (!listType || !listBuffer.length) return;
+      elements.push(
+        listType === 'ul'
+          ? <ul key={elements.length} className="my-4 space-y-2">{listBuffer}</ul>
+          : <ol key={elements.length} className="my-4 space-y-2">{listBuffer}</ol>
+      );
+      listBuffer = [];
+      listType = null;
+    };
+
+    lines.forEach((line, index) => {
+
+      /* CODE BLOCKS */
+      if (line.startsWith('```')) {
+        if (inCode) {
+          elements.push(
+            <pre key={index} className="my-4 p-4 bg-cyan-950 text-cyan-300 rounded overflow-x-auto text-sm">
+              <code>{codeBuffer.join('\n')}</code>
+            </pre>
+          );
+          codeBuffer = [];
+          inCode = false;
+        } else {
+          flushList();
+          inCode = true;
+        }
+        return;
+      }
+
+      if (inCode) {
+        codeBuffer.push(line);
+        return;
+      }
+
+      /* HEADINGS (order matters) */
       if (line.startsWith('### ')) {
-        return (
+        flushList();
+        elements.push(
           <h3 key={index} className="text-lg font-semibold text-cyan-300 mt-6 mb-3">
-            <span className="text-cyan-400/50">## </span>{line.slice(4)}
+            {line.slice(4)}
           </h3>
         );
+        return;
       }
-      
-      // Images (markdown format)
-      const imageMatch = line.match(/!\s*\[([^\]]*)\]\s*\(\s*([^)]+?)\s*\)/);
-      if (imageMatch) {
-        const alt = imageMatch[1] ?? '';
-        const src = (imageMatch[2] ?? '').trim();
 
-        return (
-          <div key={index} className="my-6">
-            <img 
-              src={src}
-              alt={alt}
-              loading="lazy"
-              className="max-w-full h-auto rounded border border-cyan-900/50"
-            />
-            {alt && (
-              <p className="text-cyan-400/50 text-xs mt-2 text-center">{alt}</p>
-            )}
-          </div>
+      if (line.startsWith('## ')) {
+        flushList();
+        elements.push(
+          <h2 key={index} className="text-xl font-bold text-cyan-400 mt-8 mb-4">
+            {line.slice(3)}
+          </h2>
         );
+        return;
       }
-      
-      // Blockquotes
-      if (line.startsWith('> ')) {
-        return (
-          <blockquote key={index} className="border-l-2 border-cyan-400 pl-4 my-4 text-cyan-400/70 italic">
+
+      if (line.startsWith('# ')) {
+        flushList();
+        elements.push(
+          <h1
+            key={index}
+            className="text-2xl font-bold text-cyan-400 mt-10 mb-6"
+            style={{ textShadow: '0 0 20px rgba(34,211,238,0.5)' }}
+          >
             {line.slice(2)}
+          </h1>
+        );
+        return;
+      }
+
+      /* BLOCKQUOTE */
+      if (line.startsWith('> ')) {
+        flushList();
+        elements.push(
+          <blockquote key={index} className="border-l-2 border-cyan-400 pl-4 my-4 text-cyan-400/70 italic">
+            {parseInlineElements(line.slice(2))}
           </blockquote>
         );
+        return;
       }
-      
-      // List items with bold
-      if (line.startsWith('- **')) {
-        const match = line.match(/- \*\*(.+?)\*\* - (.+)/);
-        if (match) {
-          return (
-            <li key={index} className="text-cyan-400/70 mb-2 flex gap-2">
-              <span className="text-cyan-400">→</span>
-              <span><strong className="text-cyan-300">{match[1]}</strong> - {match[2]}</span>
-            </li>
-          );
+
+      /* ORDERED LIST */
+      if (/^\d+\. /.test(line)) {
+        if (listType !== 'ol') {
+          flushList();
+          listType = 'ol';
         }
-      }
-      
-      // Regular list items
-      if (line.startsWith('- ')) {
-        return (
-          <li key={index} className="text-cyan-400/70 mb-2 flex gap-2">
-            <span className="text-cyan-400">→</span>
-            <span>{line.slice(2)}</span>
+        const [, num, text] = line.match(/^(\d+)\. (.+)/)!;
+        listBuffer.push(
+          <li key={index} className="flex gap-2 text-cyan-400/70">
+            <span className="font-mono">{num}.</span>
+            <span>{parseInlineElements(text)}</span>
           </li>
         );
+        return;
       }
-      
-      // Numbered lists
-      if (/^\d+\. /.test(line)) {
-        const match = line.match(/^(\d+)\. (.+)/);
-        if (match) {
-          return (
-            <li key={index} className="text-cyan-400/70 mb-2 flex gap-2">
-              <span className="text-cyan-400 font-mono">{match[1]}.</span>
-              <span>{match[2]}</span>
-            </li>
-          );
+
+      /* UNORDERED LIST */
+      if (line.startsWith('- ')) {
+        if (listType !== 'ul') {
+          flushList();
+          listType = 'ul';
         }
+        listBuffer.push(
+          <li key={index} className="flex gap-2 text-cyan-400/70">
+            <span>→</span>
+            <span>{parseInlineElements(line.slice(2))}</span>
+          </li>
+        );
+        return;
       }
-      
-      // Inline code
-      if (line.includes('`') && !line.startsWith('```')) {
-        const parts = line.split(/(`[^`]+`)/);
-        return (
+
+      /* STANDALONE IMAGE */
+      const img = line.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+      if (img) {
+        flushList();
+        elements.push(
+          <img
+            key={index}
+            src={img[2]}
+            alt={img[1]}
+            loading="lazy"
+            className="max-w-full rounded my-6 border border-cyan-900/50"
+          />
+        );
+        return;
+      }
+
+      /* PARAGRAPH */
+      if (line.trim()) {
+        flushList();
+        elements.push(
           <p key={index} className="text-cyan-400/70 mb-4 leading-relaxed">
-            {parts.map((part, i) => 
-              part.startsWith('`') && part.endsWith('`') 
-                ? <code key={i} className="px-1.5 py-0.5 bg-cyan-950 text-cyan-300 font-mono text-sm rounded">{part.slice(1, -1)}</code>
-                : part
-            )}
+            {parseInlineElements(line)}
           </p>
         );
       }
-      
-      // Regular paragraphs
-      if (line.trim() && !line.startsWith('```')) {
-        return (
-          <p key={index} className="text-cyan-400/70 mb-4 leading-relaxed">
-            {line}
-          </p>
-        );
-      }
-      
-      return null;
     });
+
+    flushList();
+    return elements;
   };
+
+  /* ---------------- JSX ---------------- */
 
   return (
     <div className="blog-theme">
@@ -155,33 +261,21 @@ const BlogPreview = ({ title, content, tags, date, readTime }: BlogPreviewProps)
             Preview Mode
           </span>
         </div>
-        
+
         <div className="p-6 max-h-[60vh] overflow-y-auto">
-          {/* Meta */}
-          <div className="flex flex-wrap items-center gap-4 text-xs text-cyan-400/50 mb-4">
-            <span className="flex items-center gap-1">
-              <Calendar className="w-3 h-3" />
-              {date || new Date().toLocaleDateString()}
-            </span>
-            <span className="flex items-center gap-1">
-              <Clock className="w-3 h-3" />
-              {readTime || '1 min read'}
-            </span>
+          <div className="flex gap-4 text-xs text-cyan-400/50 mb-4">
+            <span><Calendar className="inline w-3 h-3 mr-1" />{date || new Date().toLocaleDateString()}</span>
+            <span><Clock className="inline w-3 h-3 mr-1" />{readTime || '1 min read'}</span>
           </div>
 
-          {/* Title */}
-          <h1 className="text-2xl font-bold text-cyan-400 mb-4" style={{ textShadow: '0 0 20px rgba(34, 211, 238, 0.5)' }}>
+          <h1 className="text-2xl font-bold text-cyan-400 mb-4">
             {title || 'Untitled Post'}
           </h1>
 
-          {/* Tags */}
           {tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-6 pb-6 border-b border-cyan-900/30">
+            <div className="flex gap-2 flex-wrap mb-6 border-b border-cyan-900/30 pb-6">
               {tags.map(tag => (
-                <span 
-                  key={tag} 
-                  className="inline-flex items-center gap-1 px-2 py-1 text-xs border border-cyan-900 text-cyan-400/70"
-                >
+                <span key={tag} className="px-2 py-1 text-xs border border-cyan-900 text-cyan-400/70 flex gap-1">
                   <Tag className="w-3 h-3" />
                   {tag}
                 </span>
@@ -189,7 +283,6 @@ const BlogPreview = ({ title, content, tags, date, readTime }: BlogPreviewProps)
             </div>
           )}
 
-          {/* Content */}
           <div className="prose-terminal">
             {content ? renderContent(content) : (
               <p className="text-cyan-400/50 italic">No content yet...</p>
