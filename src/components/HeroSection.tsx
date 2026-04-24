@@ -3,6 +3,7 @@ import { Github, Linkedin, Mail, ChevronDown } from 'lucide-react';
 import TypewriterText from './TypewriterText';
 import TerminalHeader from './TerminalHeader';
 import { supabase } from '@/integrations/supabase/client';
+import {useResumeStore} from '@/hooks/useResumeStore'
 
 const ASCII_LOGO = `
     ██████╗ ██████╗ ████████╗ █████╗ ██████╗  ██████╗  ██████╗ ████████╗
@@ -16,7 +17,8 @@ const ASCII_LOGO = `
 const HeroSection = () => {
   const [showContent, setShowContent] = useState(false);
   const [bootSequence, setBootSequence] = useState(0);
-  const [resumeUrl, setResumeUrl] = useState<string>('/resume/DhairyaShukla_Resume.pdf');
+  
+  const { settings: resumeSettings } = useResumeStore();
 
   useEffect(() => {
     const timers = [
@@ -28,21 +30,7 @@ const HeroSection = () => {
     return () => timers.forEach(clearTimeout);
   }, []);
 
-  useEffect(() => {
-    const fetchResumeUrl = async () => {
-      const { data } = await supabase
-        .from('site_settings')
-        .select('resume_url')
-        .eq('id', 'main')
-        .maybeSingle();
 
-      if (data?.resume_url) {
-        setResumeUrl(data.resume_url);
-      }
-    };
-
-    fetchResumeUrl();
-  }, []);
 
   return (
     <section className="min-h-screen flex items-center justify-center relative px-4 pt-16">
@@ -146,7 +134,7 @@ const HeroSection = () => {
                         <span>Read Blog</span>
                       </a>
                       <a
-                        href={resumeUrl}
+                        href={resumeSettings?.resume_url || "#"}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="btn-terminal flex items-center gap-2"
