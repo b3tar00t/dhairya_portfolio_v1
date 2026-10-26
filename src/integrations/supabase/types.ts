@@ -16,8 +16,12 @@ export type Database = {
     Tables: {
       blogs: {
         Row: {
+          category: string | null
           content: string
           created_at: string
+          difficulty: string | null
+          kind: string
+          platform: string | null
           date: string
           excerpt: string
           id: string
@@ -29,8 +33,12 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          category?: string | null
           content: string
           created_at?: string
+          difficulty?: string | null
+          kind?: string
+          platform?: string | null
           date?: string
           excerpt: string
           id?: string
@@ -42,8 +50,12 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          category?: string | null
           content?: string
           created_at?: string
+          difficulty?: string | null
+          kind?: string
+          platform?: string | null
           date?: string
           excerpt?: string
           id?: string
@@ -52,6 +64,69 @@ export type Database = {
           slug?: string
           tags?: string[]
           title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      breach_stats: {
+        Row: {
+          id: string
+          skipped: number
+          solved: number
+        }
+        Insert: {
+          id?: string
+          skipped?: number
+          solved?: number
+        }
+        Update: {
+          id?: string
+          skipped?: number
+          solved?: number
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          read: boolean
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          read?: boolean
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          read?: boolean
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          data: Json
+          key: string
+          updated_at: string
+        }
+        Insert: {
+          data: Json
+          key: string
+          updated_at?: string
+        }
+        Update: {
+          data?: Json
+          key?: string
           updated_at?: string
         }
         Relationships: []
@@ -82,7 +157,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: { Args: never; Returns: boolean }
+      record_breach: { Args: { method: string }; Returns: undefined }
+      track_event: {
+        Args: { p_event: string; p_path?: string; p_referrer?: string; p_label?: string }
+        Returns: undefined
+      }
+      analytics_summary: { Args: { days?: number }; Returns: Json }
     }
     Enums: {
       [_ in never]: never

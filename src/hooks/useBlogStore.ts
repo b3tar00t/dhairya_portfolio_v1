@@ -11,7 +11,26 @@ export interface BlogPost {
   tags: string[];
   read_time: string;
   published: boolean;
+  // Writeup fields; absent on rows from before the writeups migration.
+  kind?: PostKind;
+  platform?: string | null;
+  difficulty?: Difficulty | null;
+  category?: string | null;
 }
+
+export type PostKind = 'blog' | 'writeup';
+export type Difficulty = 'easy' | 'medium' | 'hard' | 'insane';
+
+export interface PostMeta {
+  kind?: PostKind;
+  platform?: string | null;
+  difficulty?: Difficulty | null;
+  category?: string | null;
+  /** Publication date, YYYY-MM-DD. Defaults to today for new posts. */
+  date?: string;
+}
+
+export const postKind = (post: Pick<BlogPost, 'kind'>): PostKind => post.kind ?? 'blog';
 
 // Helper to generate slug from title
 const generateSlug = (title: string): string => {
@@ -47,7 +66,7 @@ export const useBlogStore = () => {
         return;
       }
 
-      setBlogs(data || []);
+      setBlogs((data as BlogPost[]) || []);
     } catch (e) {
       console.error('Error fetching blogs:', e);
     } finally {
@@ -59,16 +78,17 @@ export const useBlogStore = () => {
     fetchBlogs();
   }, []);
 
-  const addBlog = async (title: string, content: string, tags: string[] = []) => {
+  const addBlog = async (title: string, content: string, tags: string[] = [], meta: PostMeta = {}) => {
     const newBlog = {
       slug: generateSlug(title),
       title,
       excerpt: content.substring(0, 150).replace(/[#*`]/g, '').trim() + '...',
       content,
-      date: new Date().toISOString().split('T')[0],
       tags: tags.length > 0 ? tags : ['General'],
       read_time: calculateReadTime(content),
-      published: false
+      published: false,
+      ...meta,
+      date: meta.date || new Date().toISOString().split('T')[0],
     };
 
     const { data, error } = await supabase
@@ -82,7 +102,7 @@ export const useBlogStore = () => {
       throw error;
     }
 
-    setBlogs(prev => [data, ...prev]);
+    setBlogs(prev => [data as BlogPost, ...prev]);
     return data;
   };
 
@@ -111,7 +131,7 @@ export const useBlogStore = () => {
       throw error;
     }
 
-    setBlogs(prev => prev.map(b => b.id === id ? data : b));
+    setBlogs(prev => prev.map(b => b.id === id ? data as BlogPost : b));
     return data;
   };
 
@@ -145,7 +165,7 @@ export const useBlogStore = () => {
       throw error;
     }
 
-    setBlogs(prev => prev.map(b => b.id === id ? data : b));
+    setBlogs(prev => prev.map(b => b.id === id ? data as BlogPost : b));
   };
 
   const getPublishedBlogs = () => blogs.filter(b => b.published);

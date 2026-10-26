@@ -7,15 +7,15 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: "1rem",
       screens: {
-        "2xl": "1400px",
+        "2xl": "1280px",
       },
     },
     extend: {
       fontFamily: {
-        mono: ["JetBrains Mono", "Share Tech Mono", "monospace"],
-        display: ["Share Tech Mono", "JetBrains Mono", "monospace"],
+        sans: ["Archivo", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -23,16 +23,19 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        terminal: {
-          green: "hsl(var(--terminal-green))",
-          "green-dim": "hsl(var(--terminal-green-dim))",
-          "green-glow": "hsl(var(--terminal-green-glow))",
-        },
+        // Dossier palette (inside the site, after the breach)
+        paper: "hsl(var(--paper))",
+        ink: "hsl(var(--ink))",
+        signal: "hsl(var(--signal))",
+        stamp: "hsl(var(--stamp))",
+        // Perimeter palette (the locked gate)
+        perimeter: "hsl(var(--perimeter))",
+        phosphor: "hsl(var(--phosphor))",
+        // Legacy names still used by the admin panel
         cyber: {
-          cyan: "hsl(var(--cyber-cyan))",
-          purple: "hsl(var(--cyber-purple))",
-          red: "hsl(var(--cyber-red))",
-          yellow: "hsl(var(--cyber-yellow))",
+          cyan: "hsl(var(--signal))",
+          red: "hsl(var(--stamp))",
+          yellow: "hsl(var(--phosphor))",
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
@@ -78,6 +81,16 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      transitionTimingFunction: {
+        // Signature curve: decisive start, soft landing
+        signature: "cubic-bezier(0.2, 0, 0, 1)",
+        exit: "cubic-bezier(0.3, 0, 1, 1)",
+      },
+      transitionDuration: {
+        quick: "120ms",
+        standard: "260ms",
+        slow: "520ms",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -87,55 +100,23 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        typing: {
-          from: { width: "0" },
-          to: { width: "100%" },
-        },
         blink: {
           "0%, 50%": { opacity: "1" },
           "51%, 100%": { opacity: "0" },
         },
-        glitch: {
-          "0%": { transform: "translate(0)" },
-          "20%": { transform: "translate(-2px, 2px)" },
-          "40%": { transform: "translate(-2px, -2px)" },
-          "60%": { transform: "translate(2px, 2px)" },
-          "80%": { transform: "translate(2px, -2px)" },
-          "100%": { transform: "translate(0)" },
-        },
-        flicker: {
-          "0%": { opacity: "0.97" },
-          "5%": { opacity: "0.95" },
-          "10%": { opacity: "0.97" },
-          "15%": { opacity: "0.94" },
-          "20%": { opacity: "0.98" },
-          "100%": { opacity: "0.98" },
-        },
-        scanline: {
-          "0%": { transform: "translateY(0)" },
-          "100%": { transform: "translateY(100%)" },
-        },
-        fadeIn: {
-          from: { opacity: "0", transform: "translateY(10px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
-        },
-        slideIn: {
-          from: { opacity: "0", transform: "translateX(-20px)" },
-          to: { opacity: "1", transform: "translateX(0)" },
+        shake: {
+          "0%, 100%": { transform: "translateX(0)" },
+          "20%, 60%": { transform: "translateX(-10px)" },
+          "40%, 80%": { transform: "translateX(10px)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        typing: "typing 2s steps(30, end)",
         blink: "blink 1s step-end infinite",
-        glitch: "glitch 0.3s infinite",
-        flicker: "flicker 0.15s infinite",
-        scanline: "scanline 8s linear infinite",
-        "fade-in": "fadeIn 0.5s ease-out forwards",
-        "slide-in": "slideIn 0.5s ease-out forwards",
+        shake: "shake 360ms ease-in-out",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 } satisfies Config;

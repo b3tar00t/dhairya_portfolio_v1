@@ -23,3 +23,23 @@ dist-ssr
 *.sln
 *.sw?
 .env*
+!.env.example
+
+# Vercel
+.vercel
+
+# Supabase local CLI state
+supabase/.branches
+supabase/.temp
+
+# Build / tooling caches
+coverage
+*.tsbuildinfo
+.eslintcache
+Thumbs.db
+
+# Local AI tooling output
+graphify-out/
+.claude/
+.agents/
+skills-lock.json

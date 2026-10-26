@@ -1,0 +1,7 @@
+Contact: mailto:dhairya.shukla2005@gmail.com
+Expires: 2027-10-31T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://b3tar00t-dhairyashukla.vercel.app/.well-known/security.txt
+
+# Found something real on this site? Please report it by email.
+# Found something less real? ZmxhZ3tzM2N1cjF0eV90eHRfcjM0ZDNyfQ==

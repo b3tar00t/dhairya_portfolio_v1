@@ -1,424 +1,329 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-
+/*
+  Operations-console palette. Dark is the default; light is a printed
+  intel report. shadcn tokens map onto these.
+  - signal: cyan, the live/active colour
+  - phosphor: amber, warnings and the gate
+  - stamp: alert red, threats and classification marks
+*/
 @layer base {
   :root {
-    /* Terminal-inspired dark theme */
-    --background: 220 20% 4%;
-    --foreground: 120 100% 70%;
-    
-    /* Terminal green variations */
-    --terminal-green: 120 100% 50%;
-    --terminal-green-dim: 120 60% 35%;
-    --terminal-green-glow: 120 100% 65%;
-    
-    /* Accent colors */
-    --cyber-cyan: 180 100% 50%;
-    --cyber-purple: 280 100% 65%;
-    --cyber-red: 0 100% 60%;
-    --cyber-yellow: 50 100% 50%;
-    
-    --card: 220 20% 8%;
-    --card-foreground: 120 100% 70%;
+    --paper: 210 25% 94%;
+    --ink: 216 50% 10%;
+    --signal: 189 100% 30%;
+    --stamp: 352 75% 45%;
+    --perimeter: 216 48% 7%;
+    --phosphor: 37 100% 61%;
+    --amber: 32 95% 38%;
 
-    --popover: 220 20% 6%;
-    --popover-foreground: 120 100% 70%;
-
-    --primary: 120 100% 50%;
-    --primary-foreground: 220 20% 4%;
-
-    --secondary: 220 20% 12%;
-    --secondary-foreground: 120 100% 70%;
-
-    --muted: 220 15% 15%;
-    --muted-foreground: 120 40% 50%;
-
-    --accent: 180 100% 50%;
-    --accent-foreground: 220 20% 4%;
-
-    --destructive: 0 100% 60%;
+    --background: var(--paper);
+    --foreground: var(--ink);
+    --card: 210 30% 98%;
+    --card-foreground: var(--ink);
+    --popover: 210 30% 98%;
+    --popover-foreground: var(--ink);
+    --primary: var(--signal);
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 22% 88%;
+    --secondary-foreground: var(--ink);
+    --muted: 210 22% 88%;
+    --muted-foreground: 214 18% 36%;
+    --accent: 210 22% 88%;
+    --accent-foreground: var(--ink);
+    --destructive: var(--stamp);
     --destructive-foreground: 0 0% 100%;
-
-    --border: 120 40% 20%;
-    --input: 220 20% 12%;
-    --ring: 120 100% 50%;
-
+    --border: 205 25% 78%;
+    --input: 205 25% 78%;
+    --ring: var(--signal);
     --radius: 0.25rem;
 
-    --sidebar-background: 220 20% 6%;
-    --sidebar-foreground: 120 100% 70%;
-    --sidebar-primary: 120 100% 50%;
-    --sidebar-primary-foreground: 220 20% 4%;
-    --sidebar-accent: 220 20% 12%;
-    --sidebar-accent-foreground: 120 100% 70%;
-    --sidebar-border: 120 40% 20%;
-    --sidebar-ring: 120 100% 50%;
+    --sidebar-background: var(--card);
+    --sidebar-foreground: var(--ink);
+    --sidebar-primary: var(--signal);
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: var(--secondary);
+    --sidebar-accent-foreground: var(--ink);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--signal);
 
-    /* Custom gradients */
-    --gradient-terminal: linear-gradient(180deg, hsl(220 20% 4%) 0%, hsl(220 25% 8%) 100%);
-    --gradient-glow: linear-gradient(135deg, hsl(120 100% 50% / 0.1) 0%, hsl(180 100% 50% / 0.05) 100%);
-    --gradient-scanline: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      hsl(120 100% 50% / 0.03) 2px,
-      hsl(120 100% 50% / 0.03) 4px
-    );
-
-    /* Shadows */
-    --shadow-glow: 0 0 20px hsl(120 100% 50% / 0.3);
-    --shadow-glow-strong: 0 0 40px hsl(120 100% 50% / 0.5);
-    --shadow-text-glow: 0 0 10px hsl(120 100% 50% / 0.8);
+    --redaction: var(--ink);
+    --grid: 205 40% 50% / 0.07;
+    /* Chart series, validated for CVD separation and contrast on this surface */
+    --chart-1: #00899c;
+    --chart-2: #b26a00;
+    color-scheme: light;
   }
 
   .dark {
-    --background: 220 20% 4%;
-    --foreground: 120 100% 70%;
-  }
-}
+    --paper: 216 48% 6%;
+    --ink: 195 30% 92%;
+    --signal: 186 100% 52%;
+    --stamp: 352 100% 64%;
+    --amber: 37 100% 61%;
 
-@layer base {
+    --card: 214 45% 9%;
+    --popover: 214 45% 9%;
+    --primary-foreground: 216 48% 6%;
+    --secondary: 210 40% 14%;
+    --muted: 210 40% 14%;
+    --muted-foreground: 200 18% 64%;
+    --accent: 210 40% 14%;
+    --destructive-foreground: 216 48% 6%;
+    --border: 195 45% 18%;
+    --input: 195 45% 18%;
+
+    --redaction: 186 60% 70%;
+    --grid: 186 100% 52% / 0.05;
+    --chart-1: #0096ad;
+    --chart-2: #c07c12;
+    color-scheme: dark;
+  }
+
   * {
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
-    @apply bg-background text-foreground font-mono antialiased;
-    background: var(--gradient-terminal);
-    min-height: 100vh;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    font-variation-settings: "wdth" 100;
+    /* 3D decks and spheres extend past their columns; never scroll sideways. */
+    overflow-x: clip;
   }
 
-  /* Scrollbar styling */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+  /* Faint console grid behind everything */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -20;
+    pointer-events: none;
+    background-image:
+      linear-gradient(hsl(var(--grid)) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--grid)) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at 50% 30%, #000 30%, transparent 80%);
   }
 
-  ::-webkit-scrollbar-track {
-    background: hsl(var(--background));
+  /* CRT scanlines, dark theme only, static (no motion) */
+  .dark body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom, transparent 0 2px, hsl(0 0% 0% / 0.12) 2px 3px);
+    mix-blend-mode: multiply;
   }
 
-  ::-webkit-scrollbar-thumb {
-    background: hsl(var(--terminal-green-dim));
-    border-radius: 4px;
+  :focus-visible {
+    outline: 2px solid hsl(var(--signal));
+    outline-offset: 3px;
+    border-radius: 2px;
   }
 
-  ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--primary));
-  }
-
-  /* Selection styling */
   ::selection {
-    background: hsl(var(--primary) / 0.3);
-    color: hsl(var(--primary));
+    background: hsl(var(--signal) / 0.25);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
 @layer components {
-  /* Terminal window styles */
+  /* Wide, heavy display type: the width axis is the headline treatment */
+  .display {
+    font-variation-settings: "wdth" 125;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+  }
+
+  .condensed {
+    font-variation-settings: "wdth" 75;
+  }
+
+  .measure {
+    max-width: 68ch;
+  }
+
+  /* Redaction bar: covers text until revealed */
+  .redact {
+    position: relative;
+    display: inline;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    background-image: linear-gradient(hsl(var(--redaction)), hsl(var(--redaction)));
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: right;
+    color: transparent;
+    transition: background-size 520ms cubic-bezier(0.2, 0, 0, 1), color 120ms linear 260ms;
+  }
+
+  .redact[data-revealed="true"] {
+    background-size: 0% 100%;
+    color: inherit;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .redact {
+      background-size: 0% 100%;
+      color: inherit;
+    }
+  }
+
+  /* Classification stamp */
+  .stamp {
+    display: inline-block;
+    border: 2px solid hsl(var(--stamp));
+    color: hsl(var(--stamp));
+    padding: 0.15em 0.55em;
+    font-weight: 800;
+    font-variation-settings: "wdth" 112;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transform: rotate(-3deg);
+    border-radius: 3px;
+  }
+
+  /* HUD corner brackets: targeting-frame corners on a panel */
+  .hud {
+    position: relative;
+    --hud-c: hsl(var(--signal) / 0.7);
+    background-image:
+      linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c)),
+      linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c)),
+      linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c)),
+      linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c));
+    background-repeat: no-repeat;
+    background-size: 14px 2px, 2px 14px, 14px 2px, 2px 14px, 14px 2px, 2px 14px, 14px 2px, 2px 14px;
+    background-position: 0 0, 0 0, 100% 0, 100% 0, 0 100%, 0 100%, 100% 100%, 100% 100%;
+  }
+
+  /* Chromatic split used while text is scrambling */
+  .glitching {
+    text-shadow: 2px 0 hsl(var(--stamp) / 0.7), -2px 0 hsl(var(--signal) / 0.7);
+  }
+
+  /* Soft neon glow for live elements, dark theme only */
+  .dark .glow {
+    text-shadow: 0 0 18px hsl(var(--signal) / 0.45);
+  }
+
+  .link-underline {
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: hsl(var(--foreground) / 0.35);
+    transition: text-decoration-color 120ms linear;
+  }
+
+  .link-underline:hover {
+    text-decoration-color: hsl(var(--signal));
+  }
+
+  /* Admin panel controls (kept so /admin stays styled) */
   .terminal-window {
-    @apply bg-card border border-border rounded-sm overflow-hidden;
-    box-shadow: var(--shadow-glow);
-  }
-
-  .terminal-header {
-    @apply flex items-center gap-2 px-4 py-2 bg-secondary border-b border-border;
-  }
-
-  .terminal-dot {
-    @apply w-3 h-3 rounded-full;
+    @apply bg-card border border-border rounded-lg overflow-hidden;
   }
 
   .terminal-content {
-    @apply p-4 font-mono text-sm leading-relaxed;
-    background: var(--gradient-scanline), hsl(var(--card));
+    @apply p-5;
   }
 
-  /* Glowing text */
-  .text-glow {
-    text-shadow: var(--shadow-text-glow);
+  .terminal-header {
+    @apply flex items-center gap-3 border-b border-border bg-secondary/60 px-4 py-2;
   }
 
-  .text-glow-strong {
-    text-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 20px currentColor;
+  .terminal-dot {
+    @apply h-2.5 w-2.5 rounded-full;
   }
 
-  /* Blinking cursor */
-  .cursor-blink {
-    animation: blink 1s step-end infinite;
-  }
-
-  @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
-  }
-
-  /* Typewriter effect */
-  .typewriter {
-    overflow: hidden;
-    white-space: nowrap;
-    animation: typing 2s steps(30, end);
-  }
-
-  @keyframes typing {
-    from { width: 0; }
-    to { width: 100%; }
-  }
-
-  /* Scanline overlay */
-  .scanlines::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--gradient-scanline);
-    pointer-events: none;
-    z-index: 10;
-  }
-
-  /* Glitch effect */
-  .glitch {
-    position: relative;
-  }
-
-  .glitch::before,
-  .glitch::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .glitch::before {
-    animation: glitch-1 0.3s infinite linear alternate-reverse;
-    color: hsl(var(--cyber-cyan));
-    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
-  }
-
-  .glitch::after {
-    animation: glitch-2 0.3s infinite linear alternate-reverse;
-    color: hsl(var(--cyber-red));
-    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
-  }
-
-  @keyframes glitch-1 {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-2px); }
-  }
-
-  @keyframes glitch-2 {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(2px); }
-  }
-
-  /* Fade in animation */
-  .fade-in {
-    animation: fadeIn 0.5s ease-out forwards;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Staggered animations */
-  .stagger-1 { animation-delay: 0.1s; }
-  .stagger-2 { animation-delay: 0.2s; }
-  .stagger-3 { animation-delay: 0.3s; }
-  .stagger-4 { animation-delay: 0.4s; }
-  .stagger-5 { animation-delay: 0.5s; }
-
-  /* Matrix rain background */
-  .matrix-bg {
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
-    z-index: -1;
-    opacity: 0.05;
-  }
-
-  /* CRT flicker effect */
-  .crt-flicker {
-    animation: flicker 0.15s infinite;
-  }
-
-  @keyframes flicker {
-    0% { opacity: 0.97; }
-    5% { opacity: 0.95; }
-    10% { opacity: 0.97; }
-    15% { opacity: 0.94; }
-    20% { opacity: 0.98; }
-    100% { opacity: 0.98; }
-  }
-
-  /* Hover glow effect */
-  .hover-glow {
-    transition: all 0.3s ease;
-  }
-
-  .hover-glow:hover {
-    box-shadow: var(--shadow-glow-strong);
-    border-color: hsl(var(--primary));
-  }
-
-  /* Command prompt style */
-  .prompt::before {
-    content: '>';
-    @apply text-primary mr-2;
-  }
-
-  /* ASCII art styling */
-  .ascii-art {
-    @apply font-mono text-xs leading-none whitespace-pre text-primary text-glow;
-    letter-spacing: 0;
-  }
-
-  /* Skill bar */
-  .skill-bar {
-    @apply h-2 bg-secondary rounded-sm overflow-hidden;
-  }
-
-  .skill-bar-fill {
-    @apply h-full bg-primary rounded-sm;
-    box-shadow: var(--shadow-glow);
-    animation: fillBar 1s ease-out forwards;
-  }
-
-  @keyframes fillBar {
-    from { width: 0; }
-  }
-
-  /* Card hover effect */
-  .card-terminal {
-    @apply bg-card border border-border p-4 transition-all duration-300;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .card-terminal::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--gradient-scanline);
-    pointer-events: none;
-    opacity: 0.5;
-  }
-
-  .card-terminal:hover {
-    @apply border-primary;
-    box-shadow: var(--shadow-glow);
-  }
-
-  /* Navigation link */
-  .nav-link {
-    @apply text-muted-foreground hover:text-primary transition-colors duration-200 relative;
-  }
-
-  .nav-link::after {
-    content: '';
-    @apply absolute bottom-0 left-0 w-0 h-px bg-primary transition-all duration-300;
-  }
-
-  .nav-link:hover::after {
-    @apply w-full;
-  }
-
-  .nav-link.active {
-    @apply text-primary;
-  }
-
-  .nav-link.active::after {
-    @apply w-full;
-  }
-
-  /* Input terminal style */
   .input-terminal {
-    @apply bg-input border border-border text-foreground px-3 py-2 font-mono text-sm;
-    @apply focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary;
+    @apply bg-background border border-input rounded-md px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring;
   }
 
-  /* Button terminal style */
   .btn-terminal {
-    @apply bg-transparent border border-primary text-primary px-4 py-2 font-mono text-sm;
-    @apply hover:bg-primary hover:text-background transition-all duration-200;
-    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
-  }
-
-  .btn-terminal:hover {
-    box-shadow: var(--shadow-glow);
+    @apply inline-flex items-center justify-center rounded-md border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary disabled:opacity-50;
   }
 
   .btn-terminal-filled {
-    @apply bg-primary text-background border border-primary px-4 py-2 font-mono text-sm;
-    @apply hover:bg-transparent hover:text-primary transition-all duration-200;
+    @apply inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-50;
   }
+}
 
-  /* Status indicator */
-  .status-online {
-    @apply inline-block w-2 h-2 rounded-full bg-primary;
-    box-shadow: 0 0 10px hsl(var(--primary));
-    animation: pulse 2s infinite;
+/* Printing: show everything that motion would otherwise hold back. */
+@media print {
+  *, *::before, *::after {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    text-shadow: none !important;
   }
+  .redact {
+    background-size: 0% 100% !important;
+    color: inherit !important;
+  }
+  body::before, body::after {
+    display: none !important;
+  }
+}
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
-
-  /* Section styling */
-  .section-header {
-    @apply flex items-center gap-3 mb-6;
-  }
-
-  .section-header::before {
-    content: '#';
-    @apply text-primary text-glow;
-  }
-
-  .section-header::after {
-    content: '';
-    @apply flex-1 h-px bg-border;
-  }
-
-  /* Tag styling */
-  .tag {
-    @apply inline-block px-2 py-1 text-xs border border-border text-muted-foreground;
-    @apply hover:border-primary hover:text-primary transition-colors duration-200;
-  }
-
-  /* Blog Theme - Cyan variant */
-  .blog-theme {
-    --primary: 187 100% 50%;
-    --primary-foreground: 220 20% 4%;
-    --foreground: 187 80% 70%;
-    --border: 187 40% 20%;
-  }
-
-  .terminal-window-cyan {
-    @apply bg-card border border-cyan-900/50 rounded-sm overflow-hidden;
-    box-shadow: 0 0 20px rgba(34, 211, 238, 0.1);
-  }
-
-  .terminal-header-cyan {
-    @apply flex items-center gap-2 px-4 py-2 border-b border-cyan-900/50;
-    background: rgba(34, 211, 238, 0.05);
-  }
-
-  /* Blog prose styling */
-  .prose-terminal code {
-    @apply px-1.5 py-0.5 bg-cyan-950 text-cyan-300 font-mono text-sm rounded;
-  }
-
-  .prose-terminal pre {
-    @apply p-4 bg-cyan-950/50 border border-cyan-900/50 rounded my-4 overflow-x-auto;
-  }
-
-  .prose-terminal pre code {
-    @apply bg-transparent p-0;
-  }
+/* highlight.js tokens, tuned to the dossier palette */
+.hljs {
+  color: hsl(var(--ink));
+  background: transparent;
+}
+.hljs-comment,
+.hljs-quote {
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in,
+.hljs-type {
+  color: hsl(var(--signal));
+}
+.hljs-string,
+.hljs-attr,
+.hljs-template-variable {
+  color: hsl(152 60% 30%);
+}
+.dark .hljs-string,
+.dark .hljs-attr,
+.dark .hljs-template-variable {
+  color: hsl(152 55% 62%);
+}
+.hljs-number,
+.hljs-literal,
+.hljs-variable {
+  color: hsl(var(--stamp));
+}
+.hljs-title,
+.hljs-section,
+.hljs-function {
+  font-weight: 600;
 }
