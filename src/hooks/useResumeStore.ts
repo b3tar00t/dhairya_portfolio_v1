@@ -51,12 +51,12 @@ export const useResumeStore = () => {
     // Update site settings
     const { error: updateError } = await supabase
       .from('site_settings')
-      .upsert({
-        id: 'main',
+      .update({
         resume_url: publicUrl,
         resume_filename: file.name,
         updated_at: new Date().toISOString()
-      });
+      })
+      .eq('id', 'main');
 
     if (updateError) throw updateError;
 

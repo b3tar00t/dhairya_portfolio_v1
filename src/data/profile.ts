@@ -1,5 +1,5 @@
-// Single source of truth for portfolio content. Sourced from the resume
-// (public/resume/Dhairya_Shukla_Resume.pdf) and the GitHub repositories.
+// Default portfolio content, sourced from the resume and the GitHub
+// repositories. Sections edited in /admin override these at runtime.
 
 export const profile = {
   name: 'Dhairya Shukla',
@@ -13,7 +13,8 @@ export const profile = {
   github: 'https://github.com/b3tar00t',
   linkedin: 'https://linkedin.com/in/dhairyashukla7',
   site: 'https://b3tar00t-dhairyashukla.vercel.app',
-  resume: '/resume/Dhairya_Shukla_Resume.pdf',
+  // The resume is uploaded from /admin; until one exists, resume links open the brief.
+  resume: '/brief',
   education: {
     school: 'Dwarkadas J. Sanghvi College of Engineering',
     degree: 'B.Tech in Information Technology',
