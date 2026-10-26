@@ -2,7 +2,6 @@ import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import fs from "fs";
-import { componentTagger } from "lovable-tagger";
 import { applyMetaToHtml, type PageMeta } from "./src/lib/meta";
 import { postMeta, staticRouteMeta } from "./src/lib/routeMeta";
 
@@ -52,7 +51,7 @@ export default defineConfig(({ mode }) => {
       host: "::",
       port: 8080,
     },
-    plugins: [react(), mode === "development" && componentTagger(), routeMetaPages(env)].filter(Boolean),
+    plugins: [react(), routeMetaPages(env)],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),

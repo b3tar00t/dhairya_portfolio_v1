@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Check, Eye, EyeOff, Loader2, X } from 'lucide-react';
+import { createClient } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -34,8 +35,14 @@ const AccountPanel = () => {
     setError('');
     if (!passes || !matches || !different) return;
     setBusy(true);
-    // Re-authenticate: a session left open on someone else's screen isn't enough.
-    const { error: authError } = await supabase.auth.signInWithPassword({ email, password: current });
+    // Re-check the current password: a session left open on someone else's
+    // screen isn't enough. A throwaway client does the check so the real
+    // session (and its 2FA level) is untouched.
+    const verifier = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false, storageKey: 'b3ta-password-check' },
+    });
+    const { error: authError } = await verifier.auth.signInWithPassword({ email, password: current });
+    await verifier.auth.signOut({ scope: 'local' });
     if (authError) {
       setBusy(false);
       setError('Your current password is incorrect.');

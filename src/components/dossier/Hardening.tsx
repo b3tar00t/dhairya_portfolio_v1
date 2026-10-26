@@ -38,6 +38,7 @@ const NODES: Node[] = [
     threats: [
       { threat: 'Anyone signs up and gains write access', control: 'Public sign-up is disabled, and authentication alone grants nothing.' },
       { threat: 'A stolen session for a non-admin account', control: 'Writes check an explicit admin allowlist, not just “is logged in”.' },
+      { threat: 'A leaked admin password', control: 'Authenticator-app 2FA. Once enrolled, the database rejects admin writes from any session that skipped the code.' },
     ],
   },
   {

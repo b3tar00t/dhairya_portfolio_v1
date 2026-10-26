@@ -12,6 +12,7 @@ import AdminInbox from '@/components/admin/AdminInbox';
 import ContentEditor from '@/components/admin/ContentEditor';
 import Metrics from '@/components/admin/Metrics';
 import AccountPanel from '@/components/admin/AccountPanel';
+import TwoFactorPanel from '@/components/admin/TwoFactorPanel';
 
 type Tab = 'metrics' | 'posts' | 'content' | 'inbox' | 'resume' | 'account';
 
@@ -59,6 +60,61 @@ const Login = () => {
         <Link to="/" className="mt-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4" aria-hidden /> Back to the site
         </Link>
+      </form>
+    </main>
+  );
+};
+
+/** Second step of sign-in when 2FA is on: a code from the authenticator app. */
+const MfaPrompt = ({ onVerified }: { onVerified: () => void }) => {
+  const [code, setCode] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    setError('');
+    const { data } = await supabase.auth.mfa.listFactors();
+    const factor = data?.totp.find((f) => f.status === 'verified');
+    if (!factor) {
+      setBusy(false);
+      setError('No authenticator is set up for this account.');
+      return;
+    }
+    const { error: err } = await supabase.auth.mfa.challengeAndVerify({ factorId: factor.id, code: code.trim() });
+    setBusy(false);
+    if (err) {
+      setError('That code didn’t match. Use the newest code from your app.');
+      setCode('');
+      return;
+    }
+    onVerified();
+  };
+
+  return (
+    <main className="flex min-h-screen items-center justify-center p-4">
+      <form onSubmit={submit} className="hud w-full max-w-sm rounded-lg border border-border bg-card p-7">
+        <p className="font-mono text-sm text-muted-foreground">2fa challenge</p>
+        <h1 className="display mt-2 text-3xl">Enter your code</h1>
+        <label htmlFor="mfa-code" className="mt-6 block text-sm text-muted-foreground">6-digit code from your authenticator app</label>
+        <input
+          id="mfa-code"
+          autoFocus
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          maxLength={6}
+          value={code}
+          onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+          className="input-terminal mt-2 w-full text-center font-mono text-2xl tracking-[0.5em]"
+        />
+        {error && <p role="alert" className="mt-3 text-sm text-destructive">{error}</p>}
+        <button type="submit" disabled={busy || code.length !== 6} className="btn-terminal-filled mt-6 w-full gap-2">
+          {busy && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />} Verify
+        </button>
+        <button type="button" onClick={() => supabase.auth.signOut()} className="mt-4 text-sm text-muted-foreground hover:text-foreground">
+          Sign out instead
+        </button>
       </form>
     </main>
   );
@@ -143,18 +199,29 @@ const ResumePanel = () => {
 
 const Admin = () => {
   const { toast } = useToast();
-  const [session, setSession] = useState<'loading' | 'in' | 'out'>('loading');
+  const [session, setSession] = useState<'loading' | 'in' | 'out' | 'mfa'>('loading');
   const [tab, setTab] = useState<Tab>('metrics');
   const [editing, setEditing] = useState<BlogPost | 'new' | null>(null);
   const { blogs, loading, addBlog, updateBlog, deleteBlog, togglePublish, refetch } = useBlogStore();
 
   useEffect(() => {
     document.title = 'Admin | Dhairya Shukla';
+    // Signed in, but with 2FA enrolled and not yet entered: ask for the code.
+    const resolve = async (signedIn: boolean) => {
+      if (!signedIn) {
+        setSession('out');
+        return;
+      }
+      const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      const needsCode = aal?.nextLevel === 'aal2' && aal.currentLevel !== 'aal2';
+      setSession(needsCode ? 'mfa' : 'in');
+      if (!needsCode) refetch();
+    };
     const { data } = supabase.auth.onAuthStateChange((_event, s) => {
-      setSession(s ? 'in' : 'out');
-      if (s) refetch();
+      // Don't await auth calls inside this callback; defer them.
+      window.setTimeout(() => resolve(!!s), 0);
     });
-    supabase.auth.getSession().then(({ data: { session: s } }) => setSession(s ? 'in' : 'out'));
+    supabase.auth.getSession().then(({ data: { session: s } }) => resolve(!!s));
     return () => data.subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -168,6 +235,7 @@ const Admin = () => {
     );
   }
   if (session === 'out') return <Login />;
+  if (session === 'mfa') return <MfaPrompt onVerified={() => setSession('in')} />;
 
   const save = async (draft: PostDraft) => {
     const tags = tagsFrom(draft.tagsText);
@@ -278,6 +346,7 @@ const Admin = () => {
             {tab === 'account' && (
               <div className="space-y-6">
                 <h1 className="display text-3xl">Account</h1>
+                <TwoFactorPanel />
                 <AccountPanel />
               </div>
             )}
